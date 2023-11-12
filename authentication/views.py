@@ -1,0 +1,88 @@
+from rest_framework.views import APIView 
+from rest_framework.response import Response 
+from rest_framework.permissions import IsAuthenticated
+from rest_framework_simplejwt.views import TokenObtainPairView
+from rest_framework import generics,status
+from .serializers import UserSerializer
+from rest_framework_simplejwt.tokens import RefreshToken
+from .models import User
+
+
+
+class UserRegisterView(generics.CreateAPIView):
+    serializer_class = UserSerializer
+
+
+class UserLoginView(APIView):
+    def post(self,request):
+        try:
+            email = request.data.get('email')
+            user = User.objects.get(email = email)
+        except:
+            error = "User not fount!"
+            return Response(error,status=status.HTTP_404_NOT_FOUND)
+            
+        password = request.data.get('password')
+        
+        if user.check_password(password):
+            serializer = UserSerializer(user)
+            tokens = get_token(user) 
+            data = {
+                'user': serializer.data, 
+                'tokens': tokens,
+            }
+            return Response(data, status=status.HTTP_200_OK)
+        error = "Incorrect Password!"
+        return Response(error, status=status.HTTP_401_UNAUTHORIZED)
+        
+class AdminLoginView(APIView):    
+    def post(self,request):
+        try:
+            email = request.data.get('email')
+            user = User.objects.get(email = email)
+        except:
+            error = "User not fount!"
+            return Response(error,status=status.HTTP_404_NOT_FOUND)
+            
+        if not user.is_superuser:
+            error = "Access denied!"
+            return Response(error,status=status.HTTP_401_UNAUTHORIZED)
+        
+        password = request.data.get('password')
+        
+        if user.check_password(password):
+            serializer = UserSerializer(user)
+            tokens = get_token(user) 
+            data = {
+                'user': serializer.data, 
+                'tokens': tokens,
+            }
+            return Response(data, status=status.HTTP_200_OK)
+        error = "Incorrect Password!"
+        return Response(error, status=status.HTTP_401_UNAUTHORIZED)
+            
+        
+        
+class UserProfileUpdateView(generics.RetrieveUpdateAPIView):
+    serializer_class = UserSerializer
+    permission_classes = [IsAuthenticated]
+
+    def put(self,request):
+        user = request.user
+        serializer = self.get_serializer(user,data = request.data,partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.error, status=status.HTTP_400_BAD_REQUEST)
+    
+    
+    
+
+def get_token(user):
+        refresh = RefreshToken.for_user(user)
+        
+        return {
+            'refresh': str(refresh),
+            'access': str(refresh.access_token),
+        }
