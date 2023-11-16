@@ -21,18 +21,22 @@ class UserLoginView(APIView):
         except:
             error = "User not fount!"
             return Response(error,status=status.HTTP_404_NOT_FOUND)
-            
-        password = request.data.get('password')
         
-        if user.check_password(password):
-            serializer = UserSerializer(user)
-            tokens = get_token(user) 
-            data = {
-                'user': serializer.data, 
-                'tokens': tokens,
-            }
-            return Response(data, status=status.HTTP_200_OK)
-        error = "Incorrect Password!"
+        if user.is_verified:
+            
+            password = request.data.get('password')
+            
+            if user.check_password(password):
+                serializer = UserSerializer(user)
+                tokens = get_token(user) 
+                data = {
+                    'user': serializer.data, 
+                    'tokens': tokens,
+                }
+                return Response(data, status=status.HTTP_200_OK)
+            error = "Incorrect Password!"
+            return Response(error, status=status.HTTP_401_UNAUTHORIZED)
+        error = "Account not verified!"
         return Response(error, status=status.HTTP_401_UNAUTHORIZED)
         
 class AdminLoginView(APIView):    
@@ -76,6 +80,32 @@ class UserProfileUpdateView(generics.RetrieveUpdateAPIView):
             return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.error, status=status.HTTP_400_BAD_REQUEST)
     
+    
+class EmailVerificationView(APIView):
+        
+    def post(self,request):
+        token = request.data.get('token')
+        try:
+            user = User.objects.get(token=token)
+        except:
+            error = 'Invalid token!'
+            return Response(error,status=status.HTTP_400_BAD_REQUEST)
+        
+        if user.token == token and user.is_verified == False:
+            user.is_verified =True
+            user.save()
+            return Response(status=status.HTTP_200_OK)
+        
+        elif user.is_verified:
+            error = 'Email already verified!'
+            return Response(error,status=status.HTTP_400_BAD_REQUEST)
+        
+        
+    
+    
+class UserListView(generics.ListAPIView):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
     
     
 
