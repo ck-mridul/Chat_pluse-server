@@ -34,6 +34,9 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'daphne',
+    'channels',
+    
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -43,7 +46,10 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework_simplejwt',
     'authentication',
-    'corsheaders'
+    'corsheaders',
+    
+    'videoCalling',
+    
 ]
 
 REST_FRAMEWORK = {
@@ -82,7 +88,18 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'vclass.wsgi.application'
+ASGI_APPLICATION = 'vclass.asgi.application'
+
+
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels_redis.core.RedisChannelLayer",
+        "CONFIG": {
+            "hosts": [("localhost", 6379)],
+        },
+    },
+}
+
 
 
 # Database

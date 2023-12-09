@@ -19,13 +19,10 @@ class UserSerializer(serializers.ModelSerializer):
     
     def update(self, instance, validated_data):
         instance.name = validated_data.get('name', instance.name)
-        instance.email = validated_data.get('email', instance.email)
-        image = validated_data.get('image', instance.image)
-        
-        if 'password' in validated_data:
-            instance.set_password(validated_data['password'])
-        if image:
-            instance.image = image
+
+        if 'image' in validated_data:
+            instance.image.delete()
+            instance.image = validated_data.get('image')
             
         instance.save()
         return instance

@@ -8,7 +8,6 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from .models import User
 
 
-
 class UserRegisterView(generics.CreateAPIView):
     serializer_class = UserSerializer
 
@@ -29,11 +28,17 @@ class UserLoginView(APIView):
             if user.check_password(password):
                 serializer = UserSerializer(user)
                 tokens = get_token(user) 
-                data = {
+                
+                response = Response()
+                response.set_cookie(key='refresh', value=tokens['refresh'], httponly=True, samesite="none", secure=True)
+                response.set_cookie(key='access', value=tokens['access'], httponly=True, samesite="none", secure=True)
+                
+                response.data = {
                     'user': serializer.data, 
                     'tokens': tokens,
                 }
-                return Response(data, status=status.HTTP_200_OK)
+                response.status_code = status.HTTP_200_OK
+                return response
             error = "Incorrect Password!"
             return Response(error, status=status.HTTP_401_UNAUTHORIZED)
         error = "Account not verified!"
@@ -78,7 +83,7 @@ class UserProfileUpdateView(generics.RetrieveUpdateAPIView):
             serializer.save()
             
             return Response(serializer.data, status=status.HTTP_200_OK)
-        return Response(serializer.error, status=status.HTTP_400_BAD_REQUEST)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
     
 class EmailVerificationView(APIView):

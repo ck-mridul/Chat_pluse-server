@@ -6,7 +6,8 @@ from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 
 urlpatterns = [ 
     path('admin/', admin.site.urls),
-    path('api/authentication/', include('authentication.urls'))
+    path('api/authentication/', include('authentication.urls')),
+    path('api/',include('videoCalling.urls')),
 ] 
 
 if settings.DEBUG:
