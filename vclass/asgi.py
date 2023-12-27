@@ -11,12 +11,14 @@ import os
 from django.core.asgi import get_asgi_application
 from channels.routing import ProtocolTypeRouter, URLRouter
 from videoCalling import routing as videocallRouter
+from chat import routing as chatRouter
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'vclass.settings')
 
 application = ProtocolTypeRouter({
     'http': get_asgi_application(),
     'websocket':URLRouter(
-        videocallRouter.websocket_urlpatterns
+        videocallRouter.websocket_urlpatterns +
+        chatRouter.websocket_urlpatterns,
     )
 })

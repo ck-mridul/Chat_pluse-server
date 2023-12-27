@@ -18,7 +18,7 @@ class UserLoginView(APIView):
             email = request.data.get('email')
             user = User.objects.get(email = email)
         except:
-            error = "User not fount!"
+            error = "User Blocked!"
             return Response(error,status=status.HTTP_404_NOT_FOUND)
         
         if user.is_verified:
@@ -41,7 +41,7 @@ class UserLoginView(APIView):
                 return response
             error = "Incorrect Password!"
             return Response(error, status=status.HTTP_401_UNAUTHORIZED)
-        error = "Account not verified!"
+        error = "User Blocked!"
         return Response(error, status=status.HTTP_401_UNAUTHORIZED)
         
 class AdminLoginView(APIView):    
@@ -50,7 +50,7 @@ class AdminLoginView(APIView):
             email = request.data.get('email')
             user = User.objects.get(email = email)
         except:
-            error = "User not fount!"
+            error = "User Blocked!"
             return Response(error,status=status.HTTP_404_NOT_FOUND)
             
         if not user.is_superuser:
@@ -121,3 +121,14 @@ def get_token(user):
             'refresh': str(refresh),
             'access': str(refresh.access_token),
         }
+        
+class GetUserView(APIView):
+    permission_classes = [IsAuthenticated]
+    def post(request):
+        try:
+            user = UserSerializer(request.user)
+            return Response(user.data)
+        except:
+            return Response(status=status.HTTP_401_UNAUTHORIZED)
+        
+            

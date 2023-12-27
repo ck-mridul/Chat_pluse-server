@@ -11,5 +11,6 @@ urlpatterns = [
 	path('adminlogin/', views.AdminLoginView.as_view()),
 	path('verify/', views.EmailVerificationView.as_view()),
 	path('listuser/', views.UserListView.as_view()),
+	path('getuser/', views.GetUserView.as_view()),
 	
 ] 

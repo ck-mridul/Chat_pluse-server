@@ -7,7 +7,6 @@ from authentication.models import User
 class Room(models.Model):
     room_id = models.CharField(max_length=50)
     lecture = models.ForeignKey(User,on_delete=models.CASCADE)
-    
     def __str__(self) -> str:
         return self.room_id
     
