@@ -8,7 +8,8 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/authentication/', include('authentication.urls')),
     path('api/',include('videoCalling.urls')),
-    path('api/chat/',include('chat.urls'))
+    path('api/chat/',include('chat.urls')),
+    path('api/admin/',include('adminside.urls')),
 ] 
 
 if settings.DEBUG:
