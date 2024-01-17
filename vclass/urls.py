@@ -9,8 +9,6 @@ urlpatterns = [
     path('api/authentication/', include('authentication.urls')),
     path('api/',include('videoCalling.urls')),
     path('api/chat/',include('chat.urls')),
-    path('api/admin/',include('adminside.urls')),
-    path('api/payment/',include('payment.urls')),
     path('api/peerchat/',include('peerChat.urls')),
 ] 
 

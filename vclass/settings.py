@@ -52,8 +52,6 @@ INSTALLED_APPS = [
     
     'videoCalling',
     'chat',
-    'adminside',
-    'payment',
     'peerChat',
     
 ]
