@@ -52,7 +52,9 @@ INSTALLED_APPS = [
     
     'videoCalling',
     'chat',
-    'adminside'
+    'adminside',
+    'payment',
+    'peerChat',
     
 ]
 
@@ -190,3 +192,6 @@ EMAIL_USE_TLS = True
 EMAIL_PORT = 587
 EMAIL_HOST_USER = config('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
+
+KEY = config('KEY')
+SECRET = config('SECRET')

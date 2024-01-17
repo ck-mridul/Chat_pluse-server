@@ -11,9 +11,11 @@ class Document(models.Model):
     name = models.CharField(max_length = 100)
     pdf = models.FileField(upload_to='documents')
     size = models.FloatField()
-
+    user_name = models.CharField(max_length = 100)
+    user_id = models.BigIntegerField()
+    
     def __str__(self):
-        return self.pdf
+        return self.name
     
     
 @receiver(post_save, sender=Document)

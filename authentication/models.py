@@ -16,6 +16,7 @@ class User(AbstractUser):
     username = models.CharField(max_length= 255,null=True,blank=True)
     is_verified = models.BooleanField(default=False)
     token = models.CharField(max_length=250, blank=True, null=True)
+    premium = models.BooleanField(default = False)
     
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['username']

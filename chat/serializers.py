@@ -5,5 +5,5 @@ from .models import Document
 class DocumentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Document
-        fields = ['id','name','pdf','size','room_id']
+        fields = ['id','name','pdf','size','room_id','user_name','user_id']
         

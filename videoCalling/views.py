@@ -14,15 +14,40 @@ class CreateRommView(APIView):
     def get(self,request):
         try:
             user = request.user
+            premium =  user.premium
             room_id = generate_room_id()
-            room = Room(room_id = room_id, lecture = user)
+            room = Room(room_id = room_id, lecture = user, premium = premium)
             room.save()
             return Response(data=room_id, status=status.HTTP_200_OK)
         
         except Exception as e:
             print(e)
             return Response(status=status.HTTP_400_BAD_REQUEST)
+        
+        
+class JoinRoomView(APIView):
+    permission_classes = [IsAuthenticated]
 
+    def post(self, request):
+        room_id = request.data.get('room_id')
+        print(room_id)
+        try:
+            room = Room.objects.get(room_id = room_id)
+            
+            if room.premium:
+                room.num_of_peer += 1
+                room.save()
+                return Response(status=status.HTTP_200_OK)
+            
+            if room.num_of_peer >= 50:
+                return Response('Total limit exceeded',status=status.HTTP_406_NOT_ACCEPTABLE)
+            
+            room.num_of_peer += 1
+            room.save()
+            return Response(status=status.HTTP_200_OK)
+        
+        except:
+            return Response(status=status.HTTP_404_NOT_FOUND)
 
 
 
