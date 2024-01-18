@@ -1,3 +1,4 @@
+import uuid
 from rest_framework.views import APIView 
 from rest_framework.response import Response 
 from rest_framework.permissions import IsAuthenticated
@@ -6,12 +7,30 @@ from rest_framework import generics,status
 from .serializers import UserSerializer
 from rest_framework_simplejwt.tokens import RefreshToken
 from .models import User
+from .send_mails import send_verification_email
 
 
-class UserRegisterView(generics.CreateAPIView):
-    serializer_class = UserSerializer
+class UserRegisterView(APIView):
 
-
+    def post(self,request):
+        email = request.data.get('email')
+        user = User.objects.filter(email=email)
+        if user:
+            return Response('Email already Exist!',status=status.HTTP_400_BAD_REQUEST)
+        serializer = UserSerializer(data=request.data)
+        
+        if serializer.is_valid():
+            serializer.save()
+            user_obj = User.objects.get(email=email)
+            uid = str(uuid.uuid4())
+            user_obj.token = uid
+            user_obj.save()
+            print(email,'email')
+            send_verification_email.delay(email,uid)
+            return Response(serializer.data,status=status.HTTP_201_CREATED)
+        return Response('Somthig Error!',status=status.HTTP_400_BAD_REQUEST)
+        
+        
 class UserLoginView(APIView):
     def post(self,request):
         try:
