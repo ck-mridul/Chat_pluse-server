@@ -34,66 +34,43 @@ class UserRegisterView(APIView):
 class UserLoginView(APIView):
     def post(self,request):
         try:
-            email = request.data.get('email')
-            user = User.objects.get(email = email)
-        except:
-            error = "User not found!"
-            return Response(error,status=status.HTTP_404_NOT_FOUND)
-        
-        if not user.is_active:
-            error = "User Blocked!"
-            return Response(error,status=status.HTTP_404_NOT_FOUND)
-        
-        if user.is_verified:
+            try:
+                email = request.data.get('email')
+                user = User.objects.get(email = email)
+            except:
+                error = "User not found!"
+                return Response(error,status=status.HTTP_404_NOT_FOUND)
             
-            password = request.data.get('password')
+            if not user.is_active:
+                error = "User Blocked!"
+                return Response(error,status=status.HTTP_404_NOT_FOUND)
             
-            if user.check_password(password):
-                serializer = UserSerializer(user)
-                tokens = get_token(user) 
+            if user.is_verified:
                 
-                response = Response()
-                response.set_cookie(key='refresh', value=tokens['refresh'], httponly=True, samesite="none", secure=True)
-                response.set_cookie(key='access', value=tokens['access'], httponly=True, samesite="none", secure=True)
+                password = request.data.get('password')
                 
-                response.data = {
-                    'user': serializer.data, 
-                    'tokens': tokens,
-                }
-                response.status_code = status.HTTP_200_OK
-                return response
-            error = "Incorrect Password!"
+                if user.check_password(password):
+                    serializer = UserSerializer(user)
+                    tokens = get_token(user) 
+                    
+                    response = Response()
+                    response.set_cookie(key='refresh', value=tokens['refresh'], httponly=True, samesite="none", secure=True)
+                    response.set_cookie(key='access', value=tokens['access'], httponly=True, samesite="none", secure=True)
+                    
+                    response.data = {
+                        'user': serializer.data, 
+                        'tokens': tokens,
+                    }
+                    response.status_code = status.HTTP_200_OK
+                    return response
+                error = "Incorrect Password!"
+                return Response(error, status=status.HTTP_401_UNAUTHORIZED)
+            error = "User not Verified!"
             return Response(error, status=status.HTTP_401_UNAUTHORIZED)
-        error = "User not Verified!"
-        return Response(error, status=status.HTTP_401_UNAUTHORIZED)
-        
-class AdminLoginView(APIView):    
-    def post(self,request):
-        try:
-            email = request.data.get('email')
-            user = User.objects.get(email = email)
         except:
-            error = "User not found!"
-            return Response(error,status=status.HTTP_404_NOT_FOUND)
-            
-        if not user.is_superuser:
-            error = "Access denied!"
-            return Response(error,status=status.HTTP_401_UNAUTHORIZED)
-        
-        password = request.data.get('password')
-        
-        if user.check_password(password):
-            serializer = UserSerializer(user)
-            tokens = get_token(user) 
-            data = {
-                'user': serializer.data, 
-                'tokens': tokens,
-            }
-            return Response(data, status=status.HTTP_200_OK)
-        error = "Incorrect Password!"
-        return Response(error, status=status.HTTP_401_UNAUTHORIZED)
-            
-        
+            error = "Something is wrong!"
+            return response(error, status=status.HTTP_400_BAD_REQUEST)
+
         
 class UserProfileUpdateView(generics.RetrieveUpdateAPIView):
     serializer_class = UserSerializer

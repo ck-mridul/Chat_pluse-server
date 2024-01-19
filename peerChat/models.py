@@ -27,8 +27,8 @@ class Thread(models.Model):
 
 
 class Media(models.Model):
-    image = models.FileField(upload_to='chat/image',null=True, blank=True)
-    video = models.FileField(upload_to='chat/video',null=True, blank=True)
+    media = models.FileField(upload_to='chat/media',null=True, blank=True)
+    media_type = models.CharField(max_length=50,null=True, blank=True)
 
 class ChatMessage(models.Model):
     thread = models.ForeignKey(Thread, null=True, blank=True, on_delete=models.CASCADE, related_name='chatmessage_thread')

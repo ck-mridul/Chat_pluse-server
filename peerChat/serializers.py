@@ -16,4 +16,5 @@ class MesageSerializer(serializers.ModelSerializer):
     class Meta:
         model = ChatMessage
         fields = '__all__'
+        depth = 1
 

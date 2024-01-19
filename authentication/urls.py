@@ -10,7 +10,6 @@ urlpatterns = [
  	path('logout/', TokenBlacklistView.as_view(), name='token_logout'),
 	path('register/', views.UserRegisterView.as_view()), 
 	path('update/', views.UserProfileUpdateView.as_view()),
-	path('adminlogin/', views.AdminLoginView.as_view()),
 	path('verify/', views.EmailVerificationView.as_view()),
 		
 ] 

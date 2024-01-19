@@ -14,6 +14,9 @@ class ChatConsumer(AsyncWebsocketConsumer):
         userId = self.scope['url_route']['kwargs']['userId']
         print(userId)
         chat_room = f'user_chatroom_{userId}'
+        if self.scope['user'].is_anonymous:
+            await self.close(code=4001)
+            return
         self.chat_room = chat_room
         await self.channel_layer.group_add(
             chat_room,
@@ -30,6 +33,8 @@ class ChatConsumer(AsyncWebsocketConsumer):
         sent_by_name = received_data.get('sent_by_name')
         send_to_id = received_data.get('send_to')
         thread_id = received_data.get('thread_id')
+        media_type = received_data.get('media_type')
+        media = received_data.get('media')
         
         other_user_chat_room = f'user_chatroom_{send_to_id}'
         
@@ -62,6 +67,8 @@ class ChatConsumer(AsyncWebsocketConsumer):
                     'vcall': json.dumps(response)
                 }
             )    
+        elif media_type:
+            print('media-',media['media'],' type-',media_type)
             
         else:
             thread_obj = await self.get_thread(thread_id)
