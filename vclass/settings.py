@@ -47,13 +47,13 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework_simplejwt',
     'rest_framework_simplejwt.token_blacklist',
-    'authentication',
     'corsheaders',
     'celery',
     
-    'videoCalling',
-    'chat',
-    'peerChat',
+    'authentication.app.AuthenticationConfig',
+    'videoCalling.app.VideocallingConfig',
+    'chat.app.ChatConfig',
+    'peerChat.app.PeerchatConfig',
     
 ]
 
