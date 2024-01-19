@@ -14,6 +14,8 @@ from pathlib import Path
 from decouple import config
 import os
 
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'vclass.settings')
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -50,10 +52,10 @@ INSTALLED_APPS = [
     'corsheaders',
     'celery',
     
-    'authentication.app.AuthenticationConfig',
-    'videoCalling.app.VideocallingConfig',
-    'chat.app.ChatConfig',
-    'peerChat.app.PeerchatConfig',
+    'authentication.apps.AuthenticationConfig',
+    'videoCalling.apps.VideocallingConfig',
+    'chat.apps.ChatConfig',
+    'peerChat.apps.PeerchatConfig', 
     
 ]
 
