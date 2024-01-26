@@ -78,6 +78,13 @@ class UserProfileUpdateView(generics.RetrieveUpdateAPIView):
 
     def put(self,request):
         user = request.user
+        username = request.data.get('username')
+        if username:
+            user_obj = User.objects.filter(username = username).exclude(id=user.id)
+            if user_obj:
+                erro_message = {'error':'username already exist!'}
+                
+                return Response(erro_message,status=status.HTTP_406_NOT_ACCEPTABLE)
         serializer = self.get_serializer(user,data = request.data,partial=True)
         if serializer.is_valid():
             serializer.save()
@@ -116,5 +123,5 @@ def get_token(user):
         }
         
 
-        
+
             

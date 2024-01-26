@@ -71,16 +71,29 @@ class ChatConsumer(AsyncWebsocketConsumer):
             print('media-',media['media'],' type-',media_type)
             
         else:
-            thread_obj = await self.get_thread(thread_id)
-            
-            await self.create_chat_message(thread_obj, sent_by_id, msg)
+            if msg != 'delete':
+                thread_obj = await self.get_thread(thread_id)
+                if thread_obj.block_by:
+                    return
+                chat = await self.create_chat_message(thread_obj, sent_by_id, msg)
 
-            response = {
-                'message': msg,
-                'userId': sent_by_id,
-                'thread_id': thread_id
-            }
-
+                response = {
+                    'id':chat.id,
+                    'message': msg,
+                    'userId': sent_by_id,
+                    'userName':sent_by_name,
+                    'thread_id': thread_id
+                }
+            else:
+                id = received_data.get('id')
+                await self.delete_msg(id)
+                
+                response = {
+                    'delete_by':sent_by_id,
+                    'message': 'deleted',
+                    
+                }
+                
             await self.channel_layer.group_send(
                 other_user_chat_room,
                 {
@@ -132,10 +145,18 @@ class ChatConsumer(AsyncWebsocketConsumer):
         qs = Thread.objects.filter(id=thread_id)
         if qs.exists():
             obj = qs.first()
+            obj.hide_by_frst = False
+            obj.hide_by_second = False
+            obj.save()
         else:
             obj = None
         return obj
 
     @database_sync_to_async
     def create_chat_message(self, thread, user, msg):
-        ChatMessage.objects.create(thread=thread, userId=user, message=msg)
+        chat = ChatMessage.objects.create(thread=thread, userId=user, message=msg)
+        return chat
+    
+    @database_sync_to_async
+    def delete_msg(self, id):
+        ChatMessage.objects.get(id=id).delete()

@@ -20,6 +20,9 @@ class Thread(models.Model):
                                      related_name='thread_second_person')
     updated = models.DateTimeField(auto_now=True)
     timestamp = models.DateTimeField(auto_now_add=True)
+    block_by = models.BigIntegerField(null=True, blank=True,)
+    hide_by_frst = models.BooleanField(default = False)
+    hide_by_second = models.BooleanField(default = False)
 
     objects = ThreadManager()
     class Meta:
