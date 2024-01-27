@@ -39,7 +39,13 @@ class ChatConsumer(AsyncWebsocketConsumer):
         other_user_chat_room = f'user_chatroom_{send_to_id}'
         
         if vcall:
+                            
             if vcall == 'call':
+                
+                thread_obj = await self.get_thread(thread_id)
+                if thread_obj.block_by:
+                    return
+                
                 response = {
                     'type': vcall,
                     'user_to': send_to_id,
@@ -76,7 +82,12 @@ class ChatConsumer(AsyncWebsocketConsumer):
                 if thread_obj.block_by:
                     return
                 chat = await self.create_chat_message(thread_obj, sent_by_id, msg)
-
+                
+                # if selected_peer != selected_peer:
+                #     print(selected_peer,selected_peer,'blabla')
+                #     thread_obj.reed = False
+                #     thread_obj.save()
+                    
                 response = {
                     'id':chat.id,
                     'message': msg,

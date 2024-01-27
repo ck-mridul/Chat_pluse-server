@@ -29,11 +29,11 @@ class GetAllMessageView(APIView):
     
     def post(self,request):
         try:
-            peerID = request.data.get('userId')
             Tid = request.data.get('Tid')
             thread = Thread.objects.get(id=Tid)
             message = ChatMessage.objects.filter(thread = thread)
             serilizer = MesageSerializer(message,many=True)
+            
             return Response(serilizer.data,status=status.HTTP_200_OK)
         except:
             return Response(status=status.HTTP_400_BAD_REQUEST)
@@ -70,7 +70,7 @@ class AddFriendView(APIView):
                     thread[0].save()
                 
                 response = {
-                        'message':'Thread created',
+                        'message':'Thread added',
                         'Tid':thread[0].id,
                         'block_by':thread[0].block_by,
                     }
