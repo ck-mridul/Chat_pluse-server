@@ -30,7 +30,7 @@ SECRET_KEY = config('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = config('DEBUG',default=False, cast=bool)
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['13.54.23.112','chatpluse.online','www.chatpluse.online']
 
 
 # Application definition
@@ -185,6 +185,9 @@ AUTH_USER_MODEL = 'authentication.User'
 
 CORS_ORIGIN_ALLOW_ALL = True
 CORS_ALLOW_CREDENTIALS = True
+CORS_ALLOWED_ORIGINS = [
+    "https://chat-pulse.vercel.app", 
+]
 
 
 EMAIL_BAKEND = 'django.core.mail.backends.smtp.EmailBackend'
