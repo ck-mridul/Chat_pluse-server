@@ -12,7 +12,7 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 
 from pathlib import Path
 from decouple import config
-import dj-database-url
+import dj_database_url
 import os
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'vclass.settings')
