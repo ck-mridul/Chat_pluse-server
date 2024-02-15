@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 
 from pathlib import Path
 from decouple import config
+import dj-database-url
 import os
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'vclass.settings')
@@ -113,14 +114,7 @@ CHANNEL_LAYERS = {
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': config('NAME'),
-        'USER': 'mridul',
-        'PASSWORD': config('PASSWORD'),
-        'HOST': 'localhost',  
-        'PORT': '5432',      
-    }
+    "default": dj_database_url.parse(os.environ.get("DATABASE_URL"))
 }
 
 
