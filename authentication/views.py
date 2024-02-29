@@ -26,7 +26,8 @@ class UserRegisterView(APIView):
             user_obj.token = uid
             user_obj.save()
             print(email,'email')
-            # send_verification_email.delay(email,uid)
+            # change celery to normal due to hosting on rendor
+            send_verification_email(email,uid)
             return Response(serializer.data,status=status.HTTP_201_CREATED)
         return Response('Somthig Error!',status=status.HTTP_400_BAD_REQUEST)
         

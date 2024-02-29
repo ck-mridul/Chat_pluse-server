@@ -12,7 +12,6 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 
 from pathlib import Path
 from decouple import config
-import dj_database_url
 import os
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'vclass.settings')
@@ -185,7 +184,8 @@ AUTH_USER_MODEL = 'authentication.User'
 CORS_ORIGIN_ALLOW_ALL = True
 CORS_ALLOW_CREDENTIALS = True
 CORS_ALLOWED_ORIGINS = [
-    "https://chat-pulse.vercel.app", 
+    "https://chat-pulse.vercel.app",
+    "https://chat-pluse.onrender.com",
 ]
 
 
