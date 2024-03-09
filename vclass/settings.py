@@ -187,6 +187,7 @@ CORS_ALLOWED_ORIGINS = [
     "https://chat-pulse.vercel.app",
     "https://chat-pluse.onrender.com",
 ]
+CSRF_TRUSTED_ORIGINS = ['https://chat-pluse.onrender.com']
 
 
 EMAIL_BAKEND = 'django.core.mail.backends.smtp.EmailBackend'
