@@ -10,6 +10,10 @@ from .models import User
 from .send_mails import send_verification_email
 
 
+class WelcomeView(APIView):
+    def get(self):
+        return Response({'message':'Welcome'})
+
 class UserRegisterView(APIView):
 
     def post(self,request):
